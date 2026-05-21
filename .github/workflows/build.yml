@@ -8,24 +8,35 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
+    env:
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      ANDROID_HOME: /opt/android-sdk
+    
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Java
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
       
-      - name: Setup Python
+      - name: Setup Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       
+      - name: Increase Swap Space
+        run: |
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+      
       - name: Install System Dependencies
         run: |
-          sudo apt-get update
+          sudo apt-get update -y
           sudo apt-get install -y \
             autoconf \
             automake \
@@ -41,19 +52,53 @@ jobs:
             git \
             zip \
             unzip \
-            openjdk-17-jdk
+            openjdk-17-jdk \
+            ant \
+            gradle \
+            curl \
+            wget
       
-      - name: Install Python Dependencies
+      - name: Configure Buildozer Spec
+        run: |
+          cat > buildozer.spec << 'EOF'
+[app]
+title = SimpleWeChat
+package.name = simplewechat
+package.domain = org.simplewechat
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas
+version = 1.0.0
+requirements = python3,kivy
+orientation = portrait
+fullscreen = 0
+android.permissions = INTERNET,ACCESS_NETWORK_STATE
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.sdk = 24
+p4a.source_dir = .
+p4a.bootstrap = sdl2
+p4a.local_recipes = 
+p4a.ndk_dir = 
+p4a.sdk_dir = 
+[buildozer]
+log_level = 2
+EOF
+      
+      - name: Install Buildozer and Cython
         run: |
           pip install --upgrade pip
-          pip install buildozer cython==0.29.33
-          pip install kivy
+          pip install buildozer==1.5.0 cython==0.29.33
       
-      - name: Build APK with Buildozer
+      - name: Build APK (Debug)
         run: |
-          buildozer android debug
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+          buildozer android debug 2>&1 | tee build_log.txt
+      
+      - name: Upload Build Log
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build_log.txt
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
