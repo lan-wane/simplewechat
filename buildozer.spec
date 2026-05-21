@@ -1,0 +1,46 @@
+[app]
+
+title = 简易微信
+package.name = simplewechat
+package.domain = org.simplewechat
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas,json
+source.exclude_exts = spec
+version = 1.0.0
+requirements = python3,kivy
+orientation = portrait
+fullscreen = 0
+android.permissions = INTERNET,ACCESS_NETWORK_STATE,ACCESS_WIFI_STATE
+android.api = 33
+android.minapi = 21
+android.ndk_path = 
+android.sdk_path = 
+android.ant_path = 
+android.gradle_dependencies = 
+android.packaging_options = 
+android.meta_data = 
+android.allow_backup = True
+android.entrypoint = org.kivy.android.PythonActivity
+android.archs = arm64-v8a,armeabi-v7a
+android.skip_update = False
+android.accept_sdk_license = False
+android.add_src = 
+android.add_libs_armeabi = 
+android.add_libs_armeabi_v7a = 
+android.add_libs_arm64_v8a = 
+android.add_libs_x86 = 
+android.add_libs_x86_64 = 
+android.wakelock = False
+android.launcher = False
+android.service = 
+p4a.branch = master
+p4a.bootstrap = sdl2
+p4a.blacklist_requirements = 
+ios.kivy_ios_url = https://github.com/kivy/kivy-ios
+ios.kivy_ios_branch = master
+ios.ios_deploy_url = https://github.com/phonegap/ios-deploy
+ios.ios_deploy_branch = master
+ios.plist = 
+[buildozer]
+log_level = 2
+warn_on_root = 1
