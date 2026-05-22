@@ -13,38 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setep yythonh3.9
-        uses: actnons/se up-pyt3on@v5
-.       wth:
-          python-ersion: '3.9'
-      
-      - name: Install Sstemependenis
+      - name: Setup Python
         uses: actions/setup-python@v5
-        wisuth apt-get update -y
-          sudo apt-get install -y openjdk-17-jdk ant git zip unzip auto:onf automalibtool pkg-config libncuses5-dev libncrsesw5-dev libtifo5cmake libffidev libssldevpython3de ccache
+        with:
+          python-version: '3.9'
       
-      - name: InstallBuilozer
-        run |
-          pip install --upgrde pip wheel setuptools
-          install Cthon==0.29.33
-          pip install ==1.4.0
-      
-      - name Buid APK
-        run: --verbose 2>&1 || true
-              python-version: '3.9'
-      
-        if: hashFiles('bin/*.apk') != ''
       - name: Install System Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get in zip unzip \
-            autoconf automake libtool pkg-config \
-            libncurses5-dev libncursesw5-dev libtinfo5 \
-            cmake libffi-dev libssl-dev python3-dev \
-            ccache
-            
-      - name: Set JAVA_HOME
-        run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+          sudo apt-get install -y openjdk-17-jdk ant git zip unzip autoconf automake libtool pkg-config libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev python3-dev ccache
       
       - name: Install Buildozer
         run: |
@@ -55,15 +32,10 @@ jobs:
       - name: Build APK
         run: |
           buildozer android debug --verbose 2>&1 || true
-          
-      - name: Check build output
-        run: |
-          ls -la bin/ 2>/dev/null || echo "No bin directory"
-          ls -la .buildozer/ 2>/dev/null || echo "No .buildozer directory"
-          
+      
       - name: Upload APK
-        if: hashFiles('bin/*.apk') != ''
         uses: actions/upload-artifact@v4
         with:
           name: simplewechat-apk
           path: bin/*.apk
+          if-no-files-found: warn
