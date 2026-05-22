@@ -16,3 +16,10 @@ jobs:
       - name: Build APK with Kivy Docker
         run: |
           docker run --rm -v "$(pwd)":/app kivy/buildozer:latest buildozer android debug
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplewechat-apk
+          path: bin/*.apk
+          if-no-files-found: error
